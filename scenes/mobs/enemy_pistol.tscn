@@ -1,0 +1,89 @@
+[gd_scene load_steps=10 format=3 uid="uid://cgvb6yl00wiip"]
+
+[ext_resource type="Script" path="res://scenes/mobs/enemy_pistol.gd" id="1_45km1"]
+[ext_resource type="Texture2D" uid="uid://dcx1p5ttasqn6" path="res://textures/spritesheet.png" id="2_ljl0h"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3rwu2"]
+atlas = ExtResource("2_ljl0h")
+region = Rect2(24, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_odhxt"]
+atlas = ExtResource("2_ljl0h")
+region = Rect2(0, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g64fe"]
+atlas = ExtResource("2_ljl0h")
+region = Rect2(8, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k20kw"]
+atlas = ExtResource("2_ljl0h")
+region = Rect2(16, 8, 8, 8)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rsx2c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3rwu2")
+}],
+"loop": true,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_odhxt")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g64fe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k20kw")
+}],
+"loop": true,
+"name": &"moving",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0ubub"]
+radius = 3.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mirbc"]
+radius = 24.0
+height = 78.0
+
+[node name="EnemyPistol" type="CharacterBody2D"]
+script = ExtResource("1_45km1")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_rsx2c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_0ubub")
+
+[node name="LineOfSight" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(70, 0)
+
+[node name="DetectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+position = Vector2(32, 0)
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_mirbc")
+
+[node name="ChaseTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="ShootTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
+[connection signal="timeout" from="ChaseTimer" to="." method="_on_chase_timer_timeout"]
+[connection signal="timeout" from="ShootTimer" to="." method="_on_shoot_timer_timeout"]

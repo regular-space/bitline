@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://cwsskbpxojow"]
+
+[ext_resource type="Script" path="res://scenes/mobs/bullet.gd" id="1_8ukh6"]
+[ext_resource type="Texture2D" uid="uid://dcx1p5ttasqn6" path="res://textures/spritesheet.png" id="2_txer5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pb4w7"]
+size = Vector2(2, 2)
+
+[node name="Bullet" type="CharacterBody2D"]
+script = ExtResource("1_8ukh6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_txer5")
+region_enabled = true
+region_rect = Rect2(8, 16, 8, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_pb4w7")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
