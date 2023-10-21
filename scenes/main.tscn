@@ -9,41 +9,33 @@ process_mode = 3
 script = ExtResource("1_q47f8")
 
 [node name="TitleSplash" type="Popup" parent="."]
-size = Vector2i(160, 160)
+size = Vector2i(304, 5864)
 visible = true
 
 [node name="ColorRect" type="ColorRect" parent="TitleSplash"]
-custom_minimum_size = Vector2(160, 160)
+custom_minimum_size = Vector2(256, 144)
 offset_right = 40.0
 offset_bottom = 40.0
-color = Color(0.972549, 0, 0.972549, 1)
+color = Color(1, 0.8, 0.666667, 1)
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TitleSplash"]
-custom_minimum_size = Vector2(160, 160)
+[node name="RichTextLabel3" type="RichTextLabel" parent="TitleSplash"]
+custom_minimum_size = Vector2(256, 144)
 offset_right = 40.0
 offset_bottom = 40.0
+theme_override_colors/default_color = Color(1, 0.945098, 0.909804, 1)
 theme_override_fonts/normal_font = ExtResource("2_o5mew")
-theme_override_fonts/mono_font = ExtResource("2_o5mew")
-theme_override_font_sizes/normal_font_size = 4
+theme_override_font_sizes/normal_font_size = 8
+bbcode_enabled = true
 text = "
 
-                
 
 
+		[rainbow freq=1.0 sat=0.8 val=0.8]BITSLAYER[/rainbow]
 
+		by kevin sugay
+		regularspace.dev
 
-
-
-
-
-
-
-
-                BITSLAYER
-
-                by kevin
-                   sugay"
-fit_content = true
+		[wave amp=50.0 freq=5.0 connected=1]made with Godot[/wave]"
 
 [node name="HUD" type="CanvasLayer" parent="."]
 

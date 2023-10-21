@@ -15,6 +15,12 @@ func shoot(shooter):
 	new_bullet.direction = shooter.rotation
 	new_bullet.shooter = shooter
 	get_parent().add_child(new_bullet)
+	
+func chase():
+	print("Called AI.chase()")
+	
+func wander():
+	print("Called AI.wander()")
 
 func death_state(attacker, victim):
 	if victim.name != "Player":

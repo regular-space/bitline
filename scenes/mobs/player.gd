@@ -1,3 +1,4 @@
+class_name Player
 extends CharacterBody2D
 
 # var bullet = preload("res://scenes/mobs/bullet.tscn")

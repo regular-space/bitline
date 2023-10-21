@@ -1,69 +1,100 @@
 extends CharacterBody2D
 
-var states = ["idle", "wander", "chase", "shoot", "dead"]
-var state_index
-var sees_player = false
-var detect_player = false
+var states = ["idling", "wandering", "chasing", "shooting"]
+
+var has_seen_player = false
+
+var is_chasing = false
+var is_shooting = false
+
 var shoot_timer_started = false
 var chase_timer_started = false
 
 func _ready():
-#	sees_player = true
-#	$ShootTimer.start()
 	pass
 
 func _physics_process(delta):
-	# Player walked into Detection Area; Shooter checks for line of sight
+
+	# Assuming Player is in the area...
 	if $LineOfSight.enabled:
-		$LineOfSight.look_at(Main.player_position)
+		if is_chasing == false:
+			$LineOfSight.look_at(Main.player_position)
 		if $LineOfSight.is_colliding():
-			if $LineOfSight.get_collider().name == "Player":
-				print(self.name + " sees player")
-				sees_player = true
-				$LineOfSight.enabled = false
-				
-				if chase_timer_started == true:
-					$ChaseTimer.stop()
-					chase_timer_started = false
-					print(self.name + ": stopped chase timer")
 	
-	# Player is in detection area and shooter has line of sight. Player needs to leave detection area to stop shooting.
-	if sees_player == true:
-		self.look_at(Main.player_position)
-		if shoot_timer_started == false:
-			$ShootTimer.start()
-			shoot_timer_started = true
+			# First sighting
+			if $LineOfSight.get_collider().name == "Player" and has_seen_player == false:
+				self.look_at(Main.player_position)
+				if is_shooting == false:
+					is_chasing = false
+					print(self.name + " sees player for first time and starts shooting!")
+					has_seen_player = true
+					$LineOfSight.rotation = 0
+					is_shooting = true
+					$ChaseTimer.stop()
+					$ShootTimer.start()
+			
+			elif $LineOfSight.get_collider().name == "Player" and has_seen_player == true: # and is_chasing == false:
+				self.look_at(Main.player_position)
+				if is_shooting == false:
+					is_chasing = false
+					print(self.name + " sees player and starts shooting!")
+					$LineOfSight.rotation = 0
+					is_shooting = true
+					$ChaseTimer.stop()
+					$ShootTimer.start()
+			
+			# If player manages to break line of sight after being seen
+			elif $LineOfSight.get_collider().name != "Player" and has_seen_player:
+				if is_chasing == false:
+					$LineOfSight.rotation = 0
+					is_shooting = false
+					AI.chase()
+					is_chasing = true
+					$ChaseTimer.start()
+					$ShootTimer.stop()
+		
+			else: # Player is in area but no direct line of sight; LOS starts search 
+				pass
+		
+#		elif $LineOfSight.is_colliding() == false and is_shooting == true:
+#			print("Player left sight and " + self.name + " wants to chase!")
+#			if is_chasing == false:
+#				$LineOfSight.rotation = 0
+#				is_shooting = false
+#				print(self.name + " wants to chase!")
+#				is_chasing = true
+#				$ChaseTimer.start()
+#				$ShootTimer.stop()
 		
 func hit(attacker):
 	AI.death_state(attacker, self)
 
 func _on_detection_area_body_entered(body):
-	if body.name == "Player":
-		print("Player is in " + self.name + "'s peripheral vision.")
+	if body.name == "Player": # and is_chasing == false: # and has_seen_player == false:
+#		print("Player is in " + self.name + "'s peripheral vision.")
 		$LineOfSight.enabled = true
 
 func _on_detection_area_body_exited(body):
 	if body.name == "Player":
-		sees_player = false
-		shoot_timer_started = false
-		$ShootTimer.stop()
-		print(self.name + " lost the player and will begin the chase!")
-		
-		$ChaseTimer.start()
-		chase_timer_started = true
-		
-		### Start chasing the player
+		if has_seen_player == true and is_chasing == false:
+			$LineOfSight.enabled = false
+			AI.chase()
+			### Start chasing the player
+		else:
+			$LineOfSight.enabled = false
 		
 func _on_chase_timer_timeout():
 	print(self.name + " gave up chasing Player.")
-	
-	### Set the enemy to wander
+	is_chasing = false
+	has_seen_player = false
+	AI.wander()
 
 func _on_shoot_timer_timeout():
-	if sees_player == true:
-		AI.shoot(self)
-		print(self.name + " takes the shot!")
-		$ShootTimer.start()
-	else:
-		shoot_timer_started = false
-		$ShootTimer.stop()
+#	if sees_player == true:
+#		AI.shoot(self)
+#		print(self.name + " takes the shot!")
+#		$ShootTimer.start()
+#	else:
+#		shoot_timer_started = false
+#		$ShootTimer.stop()
+	pass

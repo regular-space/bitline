@@ -1,0 +1,97 @@
+[gd_scene load_steps=13 format=3 uid="uid://bgwdx4ei3uab3"]
+
+[ext_resource type="Texture2D" uid="uid://dcx1p5ttasqn6" path="res://textures/spritesheet.png" id="1_awv2h"]
+[ext_resource type="Script" path="res://scenes/mobs/enemy_chaser.gd" id="1_dsjmu"]
+[ext_resource type="Script" path="res://scripts/finite_state_machine.gd" id="3_w1nmy"]
+[ext_resource type="Script" path="res://scripts/enemy_wander_state.gd" id="4_tnoms"]
+[ext_resource type="Script" path="res://scripts/enemy_death_state.gd" id="5_pabmu"]
+[ext_resource type="Script" path="res://scripts/enemy_chase_state.gd" id="5_qu0hm"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_opg6w"]
+atlas = ExtResource("1_awv2h")
+region = Rect2(24, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_68liu"]
+atlas = ExtResource("1_awv2h")
+region = Rect2(0, 24, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1dyj7"]
+atlas = ExtResource("1_awv2h")
+region = Rect2(8, 24, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r6mrk"]
+atlas = ExtResource("1_awv2h")
+region = Rect2(16, 24, 8, 8)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ahtov"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_opg6w")
+}],
+"loop": true,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_68liu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1dyj7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r6mrk")
+}],
+"loop": true,
+"name": &"moving",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_e2tam"]
+radius = 3.0
+
+[node name="EnemyChaser" type="CharacterBody2D" groups=["can_die", "enemy"]]
+script = ExtResource("1_dsjmu")
+
+[node name="FiniteStateMachine" type="Node" parent="." node_paths=PackedStringArray("state")]
+script = ExtResource("3_w1nmy")
+state = NodePath("EnemyWanderState")
+
+[node name="EnemyChaseState" type="Node" parent="FiniteStateMachine" node_paths=PackedStringArray("actor", "animator", "vision_cast", "chase_timer")]
+script = ExtResource("5_qu0hm")
+actor = NodePath("../..")
+animator = NodePath("../../Animator")
+vision_cast = NodePath("../../VisionCast")
+chase_timer = NodePath("../../ChaseTimer")
+
+[node name="EnemyWanderState" type="Node" parent="FiniteStateMachine" node_paths=PackedStringArray("actor", "animator", "vision_cast", "chase_timer")]
+script = ExtResource("4_tnoms")
+actor = NodePath("../..")
+animator = NodePath("../../Animator")
+vision_cast = NodePath("../../VisionCast")
+chase_timer = NodePath("../../ChaseTimer")
+
+[node name="EnemyDeathState" type="Node" parent="FiniteStateMachine" node_paths=PackedStringArray("actor", "animator", "collision")]
+script = ExtResource("5_pabmu")
+actor = NodePath("../..")
+animator = NodePath("../../Animator")
+collision = NodePath("../../CollisionShape2D")
+
+[node name="Animator" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_ahtov")
+
+[node name="VisionCast" type="RayCast2D" parent="."]
+target_position = Vector2(50, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_e2tam")
+
+[node name="ChaseTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
