@@ -1,17 +1,17 @@
 class_name Player
 extends CharacterBody2D
 
-# var bullet = preload("res://scenes/mobs/bullet.tscn")
-
-var speed = 75
-var aim_distance = 60
+@export var speed = 75
+@export var aim_distance = 50
 
 func _ready():
 	$AnimatedSprite2D.animation = "default"
 	
 func _process(delta):
+	# Send player position to Main so other nodes can use it
 	Main.player_position = self.position
 	
+	# Movement and input
 	velocity = Vector2.ZERO
 	if Input.is_action_pressed("move_right"):
 		velocity.x += 1
@@ -23,17 +23,25 @@ func _process(delta):
 		velocity.y -= 1
 	
 	if Input.is_action_just_pressed("shoot"):
+		# Using self as origin point for bullet
 		AI.shoot(self)
 	
 	if Input.is_action_pressed("aim"):
-		var radius = aim_distance
-		var final_x = radius * cos(self.rotation)
-		var final_y = radius * sin(self.rotation)
-		var tween = get_tree().create_tween()
-		tween.tween_property($Camera2D, "offset", Vector2(final_x, final_y), 0.2)
+		# Using aim distance as radius; find a point in a circle around the player
+		var final_x = aim_distance * cos(self.rotation)
+		var final_y = aim_distance * sin(self.rotation)
+		var cam_pos_tween = get_tree().create_tween()
+#		var cam_zoom_tween = get_tree().create_tween()
+		
+		cam_pos_tween.tween_property($Camera2D, "offset", Vector2(final_x, final_y), 0.1)
+#		cam_zoom_tween.tween_property($Camera2D, "zoom", Vector2(1.5, 1.5), 0.2)
+
 	elif Input.is_action_just_released("aim"):
-		var tween = get_tree().create_tween()
-		tween.tween_property($Camera2D, "offset", Vector2.ZERO, 0.3)
+		var cam_pos_tween = get_tree().create_tween()
+#		var cam_zoom_tween = get_tree().create_tween()
+		
+		cam_pos_tween.tween_property($Camera2D, "offset", Vector2.ZERO, 0.2)
+#		cam_zoom_tween.tween_property($Camera2D, "zoom", Vector2(1.0, 1.0), 0.3)
 		
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
@@ -45,17 +53,7 @@ func _process(delta):
 		
 	move_and_slide()
 	self.look_at(get_global_mouse_position())
-	
-#func shoot(shooter):
-#	var new_bullet = bullet.instantiate()
-#	var offset_length = 7
-#	var final_x = offset_length * cos(self.rotation)
-#	var final_y = offset_length * sin(self.rotation)
-#	var offset = Vector2(final_x, final_y)
-#	new_bullet.position = self.position + offset
-#	new_bullet.direction = self.rotation
-#	new_bullet.shooter = shooter
-#	get_parent().add_child(new_bullet)
 
-func hit(shooter_position):
-	print("ouch!")
+func hit(shooter):
+	print(self.name + ": I'm hit!")
+	Main.reload_scene()

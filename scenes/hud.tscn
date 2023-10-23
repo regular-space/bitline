@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bq8qyjo5hlxw4"]
+
+[ext_resource type="Script" path="res://scenes/hud.gd" id="1_3s0ow"]
+[ext_resource type="FontFile" uid="uid://xqot5v2cyt4d" path="res://fonts/PICO-8 mono.ttf" id="2_uen7r"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_3s0ow")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_right = 1200.0
+offset_bottom = 500.0
+theme_override_colors/default_color = Color(0.160784, 0.678431, 1, 1)
+theme_override_fonts/normal_font = ExtResource("2_uen7r")
+theme_override_font_sizes/normal_font_size = 32
+text = " you shouldn't see this"

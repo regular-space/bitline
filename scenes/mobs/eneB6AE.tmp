@@ -57,32 +57,25 @@ animations = [{
 radius = 3.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1c2gx"]
-radius = 11.1803
+radius = 8.0
 
-[node name="EnemyChaser" type="CharacterBody2D" node_paths=PackedStringArray("vision_cast", "finite_state_machine") groups=["can_die", "enemy"]]
+[node name="EnemyChaser" type="CharacterBody2D" groups=["can_die", "enemy"]]
 z_index = 1
 motion_mode = 1
+wall_min_slide_angle = 0.0
 script = ExtResource("1_dsjmu")
-wander_speed = 40.0
-cast_width = 1.0
-cast_unit = 0.1
-cast_length = 60.0
-chase_speed = 60.0
-vision_cast = NodePath("VisionCast")
-finite_state_machine = NodePath("FiniteStateMachine")
 
 [node name="FiniteStateMachine" type="Node" parent="." node_paths=PackedStringArray("state")]
 script = ExtResource("3_w1nmy")
 state = NodePath("EnemyWanderState")
 
-[node name="EnemyChaseState" type="Node" parent="FiniteStateMachine" node_paths=PackedStringArray("finite_state_machine", "actor", "animator", "vision_cast", "chase_timer", "nav_timer", "enemy_death_state")]
+[node name="EnemyChaseState" type="Node" parent="FiniteStateMachine" node_paths=PackedStringArray("actor", "animator", "vision_cast", "chase_timer", "finite_state_machine", "enemy_death_state")]
 script = ExtResource("5_qu0hm")
-finite_state_machine = NodePath("..")
 actor = NodePath("../..")
 animator = NodePath("../../Animator")
 vision_cast = NodePath("../../VisionCast")
 chase_timer = NodePath("../../ChaseTimer")
-nav_timer = NodePath("../../NavTimer")
+finite_state_machine = NodePath("..")
 enemy_death_state = NodePath("../EnemyDeathState")
 
 [node name="EnemyWanderState" type="Node" parent="FiniteStateMachine" node_paths=PackedStringArray("actor", "animator", "vision_cast", "chase_timer", "wander_timer", "finite_state_machine", "enemy_death_state", "short_detection_range")]
@@ -108,7 +101,7 @@ vision_cast = NodePath("../../VisionCast")
 sprite_frames = SubResource("SpriteFrames_ahtov")
 
 [node name="VisionCast" type="RayCast2D" parent="."]
-target_position = Vector2(60, 0)
+target_position = Vector2(70, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_e2tam")
@@ -119,10 +112,6 @@ one_shot = true
 
 [node name="WanderTimer" type="Timer" parent="."]
 one_shot = true
-
-[node name="NavTimer" type="Timer" parent="."]
-wait_time = 0.5
-autostart = true
 
 [node name="ShortDetectionRange" type="Area2D" parent="."]
 

@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://cexsuwyjtod0h"]
+[gd_scene load_steps=3 format=3 uid="uid://cexsuwyjtod0h"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_q47f8"]
-[ext_resource type="Texture2D" uid="uid://o7cfuqlo2t15" path="res://icon.svg" id="2_na54l"]
 [ext_resource type="FontFile" uid="uid://xqot5v2cyt4d" path="res://fonts/PICO-8 mono.ttf" id="2_o5mew"]
 
 [node name="Main" type="Node2D"]
@@ -9,40 +8,33 @@ process_mode = 3
 script = ExtResource("1_q47f8")
 
 [node name="TitleSplash" type="Popup" parent="."]
-size = Vector2i(304, 5864)
+size = Vector2i(1280, 720)
 visible = true
 
 [node name="ColorRect" type="ColorRect" parent="TitleSplash"]
-custom_minimum_size = Vector2(256, 144)
+custom_minimum_size = Vector2(1280, 720)
 offset_right = 40.0
 offset_bottom = 40.0
-color = Color(1, 0.8, 0.666667, 1)
+color = Color(1, 0.945098, 0.909804, 1)
 
 [node name="RichTextLabel3" type="RichTextLabel" parent="TitleSplash"]
-custom_minimum_size = Vector2(256, 144)
-offset_right = 40.0
-offset_bottom = 40.0
-theme_override_colors/default_color = Color(1, 0.945098, 0.909804, 1)
+offset_left = 220.0
+offset_top = 130.0
+offset_right = 1500.0
+offset_bottom = 850.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_fonts/normal_font = ExtResource("2_o5mew")
-theme_override_font_sizes/normal_font_size = 8
+theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
 text = "
+	[font_size=64][shake rate=60.0 level=75 connected=1]BITSLAYER[/shake][/font_size]
+
+ 	by kevin sugay
+   	   (regularspace.dev)
 
 
+ 	[rainbow freq=1.0 sat=0.8 val=0.8][wave amp=70.0 freq=7.0 connected=1]made with Godot[/wave][/rainbow]
 
-		[rainbow freq=1.0 sat=0.8 val=0.8]BITSLAYER[/rainbow]
-
-		by kevin sugay
-		regularspace.dev
-
-		[wave amp=50.0 freq=5.0 connected=1]made with Godot[/wave]"
-
-[node name="HUD" type="CanvasLayer" parent="."]
-
-[node name="Sprite2D" type="Sprite2D" parent="HUD"]
-visible = false
-position = Vector2(37, 30)
-scale = Vector2(0.4375, 0.40625)
-texture = ExtResource("2_na54l")
+	press R to start!"
 
 [connection signal="mouse_entered" from="TitleSplash" to="." method="_on_title_splash_mouse_entered"]
